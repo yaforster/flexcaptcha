@@ -5,10 +5,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import javax.crypto.spec.IvParameterSpec;
-import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -24,14 +24,14 @@ import static org.mockito.ArgumentMatchers.anyString;
  */
 public class CaptchaHandlerTest {
 
-    final CipherHandler cipherHandler = getCHMock();
+    final DefaultCipherHandler cipherHandler = getCHMock();
     final String password = "ThisIsMyPassword";
-    final Button dummyObj = new Button();
+    final Serializable dummyObj = (Serializable) Mockito.mock(Object.class, Mockito.withSettings().serializable());
     final CaptchaHandler captchaHandler = makeCaptchaHandler();
 
     @Test
     public void testAddSelfReference() {
-        String selfReference = captchaHandler.addSelfReference(cipherHandler, dummyObj, password);
+        String selfReference = captchaHandler.makeSelfReference(cipherHandler, dummyObj, password);
         String selfReferenceBase64 = selfReference.split(CaptchaHandler.DELIMITER)[1];
         assertEquals("AQID", selfReferenceBase64);
     }
@@ -56,8 +56,8 @@ public class CaptchaHandlerTest {
      * === Test setup ===
      */
 
-    private CipherHandler getCHMock() {
-        CipherHandler cipherHandler = Mockito.mock(CipherHandler.class);
+    private DefaultCipherHandler getCHMock() {
+        DefaultCipherHandler cipherHandler = Mockito.mock(DefaultCipherHandler.class);
         Mockito.when(cipherHandler.generateIV())
                 .thenReturn(new IvParameterSpec(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}));
         Mockito.when(cipherHandler.decryptString(any(byte[].class), anyString(), any()))

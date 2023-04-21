@@ -1,7 +1,7 @@
 package io.github.yaforster.flexcaptcha.imgbased.handling;
 
 import io.github.yaforster.flexcaptcha.CaptchaHandler;
-import io.github.yaforster.flexcaptcha.CipherHandler;
+import io.github.yaforster.flexcaptcha.DefaultCipherHandler;
 import io.github.yaforster.flexcaptcha.imgbased.ImageCaptcha;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -33,7 +33,7 @@ public interface ImageCaptchaHandler extends CaptchaHandler {
      * @param gridWidth      The width of the grid of images. The grid is square
      *                       shaped, so a size of 3 will result in 9 cells making up
      *                       a grid of 3x3.
-     * @param cipherHandler  {@link CipherHandler} object used to handle the
+     * @param cipherHandler  {@link DefaultCipherHandler} object used to handle the
      *                       encryption of the token itself and the self reference
      *                       part inside the token
      * @param saltSource     A {@link Serializable} used to salt the token.
@@ -47,7 +47,7 @@ public interface ImageCaptchaHandler extends CaptchaHandler {
      * @return {@link ImageCaptcha} object containing the hashed solution and the
      * grid as array of byte arrays.
      */
-    default ImageCaptcha generate(int gridWidth, CipherHandler cipherHandler, Serializable saltSource,
+    default ImageCaptcha generate(int gridWidth, DefaultCipherHandler cipherHandler, Serializable saltSource,
                                   String password, BufferedImage[] solutionImages, BufferedImage[] fillImages, boolean addSelfReference) {
         BufferedImage[] allImages = ArrayUtils.addAll(solutionImages, fillImages);
         if (solutionImages == null || solutionImages.length == 0) {
@@ -72,7 +72,7 @@ public interface ImageCaptchaHandler extends CaptchaHandler {
      * @param gridWidth      The width of the grid of images. The grid is square
      *                       shaped, so a size of 3 will result in 9 cells making up
      *                       a grid of 3x3.
-     * @param cipherHandler  {@link CipherHandler} object used to handle the
+     * @param cipherHandler  {@link DefaultCipherHandler} object used to handle the
      *                       encryption of the token itself and the self reference
      *                       part inside the token
      * @param saltSource     A {@link Serializable} used to salt the token.
@@ -90,7 +90,7 @@ public interface ImageCaptchaHandler extends CaptchaHandler {
      * @return {@link ImageCaptcha} object containing the hashed solution and the
      * grid as array of byte arrays.
      */
-    ImageCaptcha generate(int gridWidth, CipherHandler cipherHandler, Serializable saltSource, String password,
+    ImageCaptcha generate(int gridWidth, DefaultCipherHandler cipherHandler, Serializable saltSource, String password,
                           BufferedImage[] solutionImages, BufferedImage[] fillImages, int imageHeight, int imageWidth, boolean addSelfReference);
 
     /**

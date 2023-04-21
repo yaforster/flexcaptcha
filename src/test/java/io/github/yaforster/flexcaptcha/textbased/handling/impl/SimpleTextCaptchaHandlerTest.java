@@ -1,7 +1,7 @@
 package io.github.yaforster.flexcaptcha.textbased.handling.impl;
 
 import io.github.yaforster.flexcaptcha.Captcha;
-import io.github.yaforster.flexcaptcha.CipherHandler;
+import io.github.yaforster.flexcaptcha.DefaultCipherHandler;
 import io.github.yaforster.flexcaptcha.textbased.TextCaptcha;
 import io.github.yaforster.flexcaptcha.textbased.rendering.impl.SimpleTextImageRenderer;
 import io.github.yaforster.flexcaptcha.textbased.textgen.impl.SimpleCaptchaTextGenerator;
@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import javax.crypto.spec.IvParameterSpec;
-import java.awt.*;
+import java.io.Serializable;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,8 +26,8 @@ public class SimpleTextCaptchaHandlerTest {
     final SimpleTextCaptchaHandler handler = new SimpleTextCaptchaHandler();
     final SimpleCaptchaTextGenerator generator = new SimpleCaptchaTextGenerator();
     final SimpleTextImageRenderer renderer = new SimpleTextImageRenderer();
-    final CipherHandler cipherHandler = getCHMock();
-    final Button dummySerializable = new Button();
+    final DefaultCipherHandler cipherHandler = getCHMock();
+    final Serializable dummySerializable = (Serializable) Mockito.mock(Object.class, Mockito.withSettings().serializable());
     final String password = "ThisIsMyPassword!";
 
     @Test
@@ -127,8 +127,8 @@ public class SimpleTextCaptchaHandlerTest {
         assertTrue(handler.validate(myText, captcha.getToken(), cipherHandler, dummySerializable, password));
     }
 
-    private CipherHandler getCHMock() {
-        CipherHandler cipherHandler = Mockito.mock(CipherHandler.class);
+    private DefaultCipherHandler getCHMock() {
+        DefaultCipherHandler cipherHandler = Mockito.mock(DefaultCipherHandler.class);
         Mockito.when(cipherHandler.generateIV())
                 .thenReturn(new IvParameterSpec(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}));
         Mockito.when(cipherHandler.decryptString(any(byte[].class), anyString(), any()))

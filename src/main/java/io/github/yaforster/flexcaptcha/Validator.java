@@ -36,7 +36,7 @@ public class Validator {
      * @return {@link Boolean} of the validation result. null if the validation
      * encountered a problem.
      */
-    public Boolean validateInput(String input, CipherHandler cipherHandler, String token, Serializable saltSource,
+    public Boolean validateInput(String input, DefaultCipherHandler cipherHandler, String token, Serializable saltSource,
                                  String password) {
         try {
             String splitString = token.split(CaptchaHandler.DELIMITER)[1];

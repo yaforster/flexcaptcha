@@ -1,17 +1,18 @@
 package io.github.yaforster.flexcaptcha;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import java.awt.*;
+import java.io.Serializable;
 
 import static org.junit.Assert.*;
 
-public class CipherHandlerTest {
+public class DefaultCipherHandlerTest {
 
-    final CipherHandler ch = new CipherHandler();
+    final DefaultCipherHandler ch = new DefaultCipherHandler();
     final byte[] inputBytes = "TestString".getBytes();
     final String password = "ThisIsMyPassword";
-    final Button dummyObj = new Button();
+    final Serializable dummyObj = (Serializable) Mockito.mock(Object.class, Mockito.withSettings().serializable());
     final byte[] ivBytes = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 
     final byte[] encrExpected = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, -32, 13, -33, -117, 18,

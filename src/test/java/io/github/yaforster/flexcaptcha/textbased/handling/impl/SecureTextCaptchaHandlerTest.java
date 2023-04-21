@@ -1,13 +1,14 @@
 package io.github.yaforster.flexcaptcha.textbased.handling.impl;
 
 import io.github.yaforster.flexcaptcha.Captcha;
-import io.github.yaforster.flexcaptcha.CipherHandler;
+import io.github.yaforster.flexcaptcha.DefaultCipherHandler;
 import io.github.yaforster.flexcaptcha.textbased.TextCaptcha;
 import io.github.yaforster.flexcaptcha.textbased.rendering.impl.SimpleTextImageRenderer;
 import io.github.yaforster.flexcaptcha.textbased.textgen.impl.SimpleCaptchaTextGenerator;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import java.awt.*;
+import java.io.Serializable;
 
 import static org.junit.Assert.*;
 
@@ -16,8 +17,8 @@ public class SecureTextCaptchaHandlerTest {
     final SecureTextCaptchaHandler handler = new SecureTextCaptchaHandler();
     final SimpleCaptchaTextGenerator generator = new SimpleCaptchaTextGenerator();
     final SimpleTextImageRenderer renderer = new SimpleTextImageRenderer();
-    final CipherHandler cipherHandler = new CipherHandler();
-    final Button dummySerializable = new Button();
+    final DefaultCipherHandler cipherHandler = new DefaultCipherHandler();
+    final Serializable dummySerializable = (Serializable) Mockito.mock(Object.class, Mockito.withSettings().serializable());
     final String password = "ThisIsMyPassword!";
 
     @Test

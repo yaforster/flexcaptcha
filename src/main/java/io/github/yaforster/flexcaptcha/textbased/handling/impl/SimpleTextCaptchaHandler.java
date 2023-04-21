@@ -1,6 +1,6 @@
 package io.github.yaforster.flexcaptcha.textbased.handling.impl;
 
-import io.github.yaforster.flexcaptcha.CipherHandler;
+import io.github.yaforster.flexcaptcha.DefaultCipherHandler;
 import io.github.yaforster.flexcaptcha.textbased.TextCaptcha;
 import io.github.yaforster.flexcaptcha.textbased.enums.Case;
 import io.github.yaforster.flexcaptcha.textbased.handling.TextCaptchaHandler;
@@ -31,7 +31,7 @@ public class SimpleTextCaptchaHandler implements TextCaptchaHandler {
      * Generates a TextCaptcha object containing the token and the images.
      */
     @Override
-    public TextCaptcha generate(int length, CipherHandler cipherHandler, Serializable saltSource, String password,
+    public TextCaptcha generate(int length, DefaultCipherHandler cipherHandler, Serializable saltSource, String password,
                                 CaptchaTextGenerator textgenerator, Case charCase, TextImageRenderer renderer, int height, int width, boolean addSelfReference) {
         checkInputs(length, textgenerator, renderer, height, width);
         String captchaText = textgenerator.generate(length, textgenerator.generate(length, charCase), charCase);
@@ -44,7 +44,7 @@ public class SimpleTextCaptchaHandler implements TextCaptchaHandler {
      * token
      */
     @Override
-    public boolean validate(String answer, String token, CipherHandler cipherHandler, Serializable saltSource, String password) {
+    public boolean validate(String answer, String token, DefaultCipherHandler cipherHandler, Serializable saltSource, String password) {
         return token.split(DELIMITER)[0].equals(makeToken(answer, saltSource));
     }
 
@@ -55,7 +55,7 @@ public class SimpleTextCaptchaHandler implements TextCaptchaHandler {
      * salt the token. Use this method if you want a captcha knowing the solution
      * beforehand, as opposed to have it randomly generated.
      */
-    public TextCaptcha toCaptcha(String captchaText, CipherHandler cipherHandler, Serializable saltSource, String password,
+    public TextCaptcha toCaptcha(String captchaText, DefaultCipherHandler cipherHandler, Serializable saltSource, String password,
                                  TextImageRenderer renderer, int height, int width, boolean addSelfReference) {
         return makeTextCaptcha(saltSource, cipherHandler, password, renderer, height, width, captchaText, addSelfReference);
     }
@@ -77,7 +77,7 @@ public class SimpleTextCaptchaHandler implements TextCaptchaHandler {
      * @param captchaText text the catpcha should display
      * @return {@link TextCaptcha} containing the finalized captcha
      */
-    private TextCaptcha makeTextCaptcha(Serializable saltSource, CipherHandler cipherHandler, String password, TextImageRenderer renderer,
+    private TextCaptcha makeTextCaptcha(Serializable saltSource, DefaultCipherHandler cipherHandler, String password, TextImageRenderer renderer,
                                         int height, int width, String captchaText, boolean addSelfReference) {
         BufferedImage image = renderer.render(captchaText, height, width);
         TextCaptcha captcha = null;
@@ -85,7 +85,7 @@ public class SimpleTextCaptchaHandler implements TextCaptchaHandler {
             byte[] imgData = convertImageToByteArray(image, IMG_FORMAT);
             CompletableFuture<String> selfreference = CompletableFuture.completedFuture(StringUtils.EMPTY);
             if (addSelfReference) {
-                selfreference = CompletableFuture.supplyAsync(() -> addSelfReference(cipherHandler, saltSource, password));
+                selfreference = CompletableFuture.supplyAsync(() -> makeSelfReference(cipherHandler, saltSource, password));
             }
             CompletableFuture<String> token = CompletableFuture.supplyAsync(() -> makeToken(captchaText, saltSource));
             captcha = new TextCaptcha(imgData, token.get() + selfreference.get());

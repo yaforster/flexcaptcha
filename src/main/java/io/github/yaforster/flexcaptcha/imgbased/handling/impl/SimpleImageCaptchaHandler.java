@@ -1,6 +1,6 @@
 package io.github.yaforster.flexcaptcha.imgbased.handling.impl;
 
-import io.github.yaforster.flexcaptcha.CipherHandler;
+import io.github.yaforster.flexcaptcha.DefaultCipherHandler;
 import io.github.yaforster.flexcaptcha.imgbased.ImageCaptcha;
 import io.github.yaforster.flexcaptcha.imgbased.handling.ImageCaptchaHandler;
 import org.apache.commons.lang3.ArrayUtils;
@@ -42,7 +42,7 @@ public class SimpleImageCaptchaHandler implements ImageCaptchaHandler {
      * Generates the image captcha. Randomizes a grid layout with the images taken
      * from solutionImages and otherImages
      */
-    public ImageCaptcha generate(int gridWidth, CipherHandler cipherHandler, Serializable saltSource, String password,
+    public ImageCaptcha generate(int gridWidth, DefaultCipherHandler cipherHandler, Serializable saltSource, String password,
                                  BufferedImage[] solutionImages, BufferedImage[] fillImages, int height, int width, boolean addSelfReference) {
         if (solutionImages == null || solutionImages.length == 0) {
             throw new IllegalArgumentException("solutionImages can not be empty or null.");
@@ -76,7 +76,7 @@ public class SimpleImageCaptchaHandler implements ImageCaptchaHandler {
      * Checks if the given answer is correct
      */
     @Override
-    public boolean validate(String answer, String token, CipherHandler cipherHandler, Serializable saltSource, String password) {
+    public boolean validate(String answer, String token, DefaultCipherHandler cipherHandler, Serializable saltSource, String password) {
         return token.split(DELIMITER)[0].equals(makeToken(answer, saltSource));
     }
 
@@ -119,7 +119,7 @@ public class SimpleImageCaptchaHandler implements ImageCaptchaHandler {
      * @param fillIndices     the indices to fill with filler images
      * @return {@link ImageCaptcha} containing the finalized captcha
      */
-    private ImageCaptcha makeImageCaptcha(Serializable saltSource, CipherHandler cipherHandler, String password, BufferedImage[] solutionImages,
+    private ImageCaptcha makeImageCaptcha(Serializable saltSource, DefaultCipherHandler cipherHandler, String password, BufferedImage[] solutionImages,
                                           BufferedImage[] fillImages, byte[][] gridData, int[] solutionIndices, int[] fillIndices, boolean addSelfReference) {
         gridData = fillGridWithImages(gridData, solutionImages, solutionIndices);
         gridData = fillGridWithImages(gridData, fillImages, fillIndices);
@@ -171,12 +171,12 @@ public class SimpleImageCaptchaHandler implements ImageCaptchaHandler {
      * @param solutionIndices the correct indices in the captcha
      * @return String of the token
      */
-    private String generateToken(CipherHandler cipherHandler, Serializable saltSource, String password, int[] solutionIndices, boolean addSelfReference) {
+    private String generateToken(DefaultCipherHandler cipherHandler, Serializable saltSource, String password, int[] solutionIndices, boolean addSelfReference) {
         Arrays.sort(solutionIndices);
         String solution = Arrays.toString(solutionIndices).replaceAll("\\s+", "");
         String token = makeToken(solution, saltSource);
         if (addSelfReference) {
-            token += addSelfReference(cipherHandler, saltSource, password);
+            token += makeSelfReference(cipherHandler, saltSource, password);
         }
         return token;
     }

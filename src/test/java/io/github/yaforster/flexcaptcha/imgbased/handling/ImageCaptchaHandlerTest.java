@@ -1,6 +1,6 @@
 package io.github.yaforster.flexcaptcha.imgbased.handling;
 
-import io.github.yaforster.flexcaptcha.CipherHandler;
+import io.github.yaforster.flexcaptcha.DefaultCipherHandler;
 import io.github.yaforster.flexcaptcha.imgbased.ImageCaptcha;
 import io.github.yaforster.flexcaptcha.imgbased.handling.impl.SimpleImageCaptchaHandler;
 import org.apache.commons.lang3.ArrayUtils;
@@ -9,10 +9,10 @@ import org.mockito.Mockito;
 
 import javax.crypto.spec.IvParameterSpec;
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -32,9 +32,9 @@ public class ImageCaptchaHandlerTest {
     final ImageCaptchaHandler handler = new SimpleImageCaptchaHandler();
     final BufferedImage[] dummyArr = new BufferedImage[]{new BufferedImage(10, 10, BufferedImage.TYPE_3BYTE_BGR)};
     final BufferedImage[] dummyArr2 = new BufferedImage[]{new BufferedImage(15, 15, BufferedImage.TYPE_4BYTE_ABGR)};
-    final Button dummySerializable = new Button();
+    final Serializable dummySerializable = (Serializable) Mockito.mock(Object.class, Mockito.withSettings().serializable());
     final String password = "ThisIsMyPassword!";
-    final CipherHandler cipherHandler = getCHMock();
+    final DefaultCipherHandler cipherHandler = getCHMock();
 
     @Test
     public void testWithDummyObjs_ShouldWork() {
@@ -153,8 +153,8 @@ public class ImageCaptchaHandlerTest {
         assertTrue(Stream.of(resizedImages).allMatch(img -> (img.getHeight() == 10 && img.getWidth() == 30)));
     }
 
-    private CipherHandler getCHMock() {
-        CipherHandler cipherHandler = Mockito.mock(CipherHandler.class);
+    private DefaultCipherHandler getCHMock() {
+        DefaultCipherHandler cipherHandler = Mockito.mock(DefaultCipherHandler.class);
         Mockito.when(cipherHandler.generateIV())
                 .thenReturn(new IvParameterSpec(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}));
         Mockito.when(cipherHandler.decryptString(any(byte[].class), anyString(), any()))

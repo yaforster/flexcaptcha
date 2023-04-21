@@ -1,6 +1,6 @@
 package io.github.yaforster.flexcaptcha.imgbased.handling.impl;
 
-import io.github.yaforster.flexcaptcha.CipherHandler;
+import io.github.yaforster.flexcaptcha.DefaultCipherHandler;
 import io.github.yaforster.flexcaptcha.imgbased.ImageCaptcha;
 import io.github.yaforster.flexcaptcha.imgbased.handling.ImageCaptchaHandler;
 import org.junit.Test;
@@ -8,10 +8,10 @@ import org.mockito.Mockito;
 
 import javax.crypto.spec.IvParameterSpec;
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertThrows;
@@ -29,9 +29,9 @@ public class SimpleImageCaptchaHandlerTest {
     final ImageCaptchaHandler handler = new SimpleImageCaptchaHandler();
     final BufferedImage[] dummyArr = new BufferedImage[]{new BufferedImage(10, 10, BufferedImage.TYPE_3BYTE_BGR)};
     final BufferedImage[] dummyArr2 = new BufferedImage[]{new BufferedImage(15, 15, BufferedImage.TYPE_4BYTE_ABGR)};
-    final Button dummySerializable = new Button();
+    final Serializable dummySerializable = (Serializable) Mockito.mock(Object.class, Mockito.withSettings().serializable());
     final String password = "ThisIsMyPassword!";
-    final CipherHandler cipherHandler = getCHMock();
+    final DefaultCipherHandler cipherHandler = getCHMock();
 
     @Test
     public void testAllNull() {
@@ -98,8 +98,8 @@ public class SimpleImageCaptchaHandlerTest {
         }).toArray(BufferedImage[]::new);
     }
 
-    private CipherHandler getCHMock() {
-        CipherHandler cipherHandler = Mockito.mock(CipherHandler.class);
+    private DefaultCipherHandler getCHMock() {
+        DefaultCipherHandler cipherHandler = Mockito.mock(DefaultCipherHandler.class);
         Mockito.when(cipherHandler.generateIV())
                 .thenReturn(new IvParameterSpec(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}));
         Mockito.when(cipherHandler.decryptString(any(byte[].class), anyString(), any()))

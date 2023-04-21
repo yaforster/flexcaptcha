@@ -46,16 +46,17 @@ public interface CaptchaHandler {
      * be used to decrypt the token, instantiate the CaptchaHandler implementation
      * and run its validation.
      *
-     * @param cipherHandler {@link CipherHandler} object used to handle the
+     * @param cipherHandler {@link DefaultCipherHandler} object used to handle the
      *                      encrypting of the self reference
      * @param saltSource    the salt source used for the encryption.
      * @param password      the password used to encrypt the implementation
      *                      reference
      * @return appended token string
      */
-    default String addSelfReference(CipherHandler cipherHandler, Serializable saltSource,
-                                    String password) {
+    default String makeSelfReference(DefaultCipherHandler cipherHandler, Serializable saltSource,
+                                     String password) {
         byte[] ivBytes = cipherHandler.generateIV().getIV();
+        Ciper cipher =
         byte[] encryptedBytes = cipherHandler.encryptString(this.getClass().getName().getBytes(), password, saltSource,
                 ivBytes);
         String base64 = Base64.getEncoder().encodeToString(encryptedBytes);
@@ -67,7 +68,7 @@ public interface CaptchaHandler {
      * Returns true if the answer is correct and the token authentic
      *
      * @param answer        the given solution to the captcha to be validated
-     * @param cipherHandler {@link CipherHandler} object used to handle the
+     * @param cipherHandler {@link DefaultCipherHandler} object used to handle the
      *                      decryption of the self reference
      * @param token         the returned token originally created with the captcha
      * @param saltSource    the salt source originally used to salt the hashed
@@ -76,7 +77,7 @@ public interface CaptchaHandler {
      * @param password      The password string used for decryption
      * @return boolean whether the captcha is valid
      */
-    boolean validate(String answer, String token, CipherHandler cipherHandler, Serializable saltSource,
+    boolean validate(String answer, String token, DefaultCipherHandler cipherHandler, Serializable saltSource,
                      String password);
 
     /**

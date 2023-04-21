@@ -1,7 +1,7 @@
 package io.github.yaforster.flexcaptcha.textbased.handling;
 
 import io.github.yaforster.flexcaptcha.CaptchaHandler;
-import io.github.yaforster.flexcaptcha.CipherHandler;
+import io.github.yaforster.flexcaptcha.DefaultCipherHandler;
 import io.github.yaforster.flexcaptcha.textbased.TextCaptcha;
 import io.github.yaforster.flexcaptcha.textbased.enums.Case;
 import io.github.yaforster.flexcaptcha.textbased.rendering.TextImageRenderer;
@@ -29,7 +29,7 @@ public interface TextCaptchaHandler extends CaptchaHandler {
      * <p>
      *
      * @param length        specifies the length
-     * @param cipherHandler {@link CipherHandler} implementation for encryption and
+     * @param cipherHandler {@link DefaultCipherHandler} implementation for encryption and
      *                      decryption
      * @param saltSource    Object used during creation of the captcha token to
      *                      ensure authenticity
@@ -42,7 +42,7 @@ public interface TextCaptchaHandler extends CaptchaHandler {
      * @return Captcha object containing the image data of the visual captcha and
      * the token containing the hashed and salted solution
      */
-    default TextCaptcha generate(int length, CipherHandler cipherHandler, Serializable saltSource,
+    default TextCaptcha generate(int length, DefaultCipherHandler cipherHandler, Serializable saltSource,
                                  String password, CaptchaTextGenerator textgenerator, TextImageRenderer renderer, int height, int width, boolean addSelfReference) {
         return generate(length, cipherHandler, saltSource, password, textgenerator, Case.MIXEDCASE, renderer, height,
                 width, addSelfReference);
@@ -55,7 +55,7 @@ public interface TextCaptchaHandler extends CaptchaHandler {
      * string is to be generated with the specified case.
      *
      * @param length        specifies the length
-     * @param cipherHandler {@link CipherHandler} implementation for encryption and
+     * @param cipherHandler {@link DefaultCipherHandler} implementation for encryption and
      *                      decryption
      * @param saltSource    Object used during creation of the captcha token to
      *                      ensure authenticity
@@ -70,7 +70,7 @@ public interface TextCaptchaHandler extends CaptchaHandler {
      * @return Captcha object containing the image data of the visual captcha and
      * the token containing the hashed and salted solution
      */
-    TextCaptcha generate(int length, CipherHandler cipherHandler, Serializable saltSource, String password,
+    TextCaptcha generate(int length, DefaultCipherHandler cipherHandler, Serializable saltSource, String password,
                          CaptchaTextGenerator textgenerator, Case charCase, TextImageRenderer renderer, int height, int width, boolean addSelfReference);
 
     /**
@@ -78,7 +78,7 @@ public interface TextCaptchaHandler extends CaptchaHandler {
      *
      * @param captchaText   predefined string from which the image and the token are
      *                      generated
-     * @param cipherHandler {@link CipherHandler} implementation for encryption and
+     * @param cipherHandler {@link DefaultCipherHandler} implementation for encryption and
      *                      decryption
      * @param saltSource    Object used during creation of the captcha token to
      *                      ensure authenticity
@@ -91,7 +91,7 @@ public interface TextCaptchaHandler extends CaptchaHandler {
      * @return Captcha object containing the image data of the visual captcha and
      * the token containing the hashed and salted solution
      */
-    TextCaptcha toCaptcha(String captchaText, CipherHandler cipherHandler, Serializable saltSource,
+    TextCaptcha toCaptcha(String captchaText, DefaultCipherHandler cipherHandler, Serializable saltSource,
                           String password, TextImageRenderer renderer, int height, int width, boolean addSelfReference);
 
     /**

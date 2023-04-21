@@ -9,7 +9,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * @author mavor
+ * Example implementation.
+ * <p>
+ * Renders a text captcha image with a background image.
+ *
+ * @author Yannick Forster
  */
 @RequiredArgsConstructor
 public class BackgroundPictureTextImageRenderer extends SimpleTextImageRenderer implements TextImageRenderer {

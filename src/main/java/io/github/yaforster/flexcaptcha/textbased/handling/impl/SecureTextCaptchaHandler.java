@@ -1,6 +1,6 @@
 package io.github.yaforster.flexcaptcha.textbased.handling.impl;
 
-import io.github.yaforster.flexcaptcha.CipherHandler;
+import io.github.yaforster.flexcaptcha.DefaultCipherHandler;
 import io.github.yaforster.flexcaptcha.textbased.TextCaptcha;
 import io.github.yaforster.flexcaptcha.textbased.enums.Case;
 import io.github.yaforster.flexcaptcha.textbased.handling.TextCaptchaHandler;
@@ -29,14 +29,14 @@ public class SecureTextCaptchaHandler implements TextCaptchaHandler {
     private static final String IMG_FORMAT = "JPEG";
 
     @Override
-    public TextCaptcha generate(int length, CipherHandler cipherHandler, Serializable saltSource, String password,
+    public TextCaptcha generate(int length, DefaultCipherHandler cipherHandler, Serializable saltSource, String password,
                                 CaptchaTextGenerator textGenerator, Case charCase, TextImageRenderer renderer, int height, int width, boolean addSelfReference) {
         checkInputs(length, textGenerator, renderer, height, width);
         String captchaText = textGenerator.generate(length, textGenerator.generate(length, charCase), charCase);
         return toCaptcha(captchaText, cipherHandler, saltSource, password, renderer, height, width, addSelfReference);
     }
 
-    public TextCaptcha toCaptcha(String captchaText, CipherHandler cipherHandler, Serializable saltSource,
+    public TextCaptcha toCaptcha(String captchaText, DefaultCipherHandler cipherHandler, Serializable saltSource,
                                  String password, TextImageRenderer renderer, int height, int width, boolean addSelfReference) {
         TextCaptcha captcha = null;
         BufferedImage image = renderer.render(captchaText, height, width);
@@ -44,7 +44,7 @@ public class SecureTextCaptchaHandler implements TextCaptchaHandler {
             byte[] imgData = convertImageToByteArray(image, IMG_FORMAT);
             CompletableFuture<String> selfreference = CompletableFuture.completedFuture(StringUtils.EMPTY);
             if (addSelfReference) {
-                selfreference = CompletableFuture.supplyAsync(() -> addSelfReference(cipherHandler, saltSource, password));
+                selfreference = CompletableFuture.supplyAsync(() -> makeSelfReference(cipherHandler, saltSource, password));
             }
             CompletableFuture<byte[]> encryptedToken = CompletableFuture.supplyAsync(() -> cipherHandler.encryptString(captchaText.getBytes(), password, saltSource));
             String tokenString = Base64.getEncoder().encodeToString(encryptedToken.get());
@@ -59,9 +59,10 @@ public class SecureTextCaptchaHandler implements TextCaptchaHandler {
     }
 
     @Override
-    public boolean validate(String answer, String token, CipherHandler cipherHandler, Serializable saltSource,
+    public boolean validate(String answer, String token, DefaultCipherHandler cipherHandler, Serializable saltSource,
                             String password) {
         byte[] decoded = Base64.getDecoder().decode(token);
+
         byte[] decryptedToken = cipherHandler.decryptString(decoded, password, saltSource);
         return answer.equals(new String(decryptedToken));
 
